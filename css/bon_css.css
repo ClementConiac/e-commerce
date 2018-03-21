@@ -1,0 +1,155 @@
+.body{
+    margin: 0;
+}
+.container-fluid{
+    padding: 0;
+}
+#menu{
+    height: 120px;
+    background-color: #eff5ee;
+    border-bottom: solid 2px #8aa9c4;
+}
+#header{
+    height: 650px;
+    background: url("../image/utilitaire/background-header-opacity.png") bottom;
+    background-size: cover;
+}
+#create-buy{
+    text-align: center;
+    color: #8aa9c4;
+    text-shadow: 2px 2px black;
+}
+#select-kind{
+    background-color: #8aa9c4 ;
+    height: 100px;
+}
+#button-kind{
+    border-radius: 10px;
+    border: solid 2px #eff5ee;
+    background-color: #eff5ee;
+    color: #8aa9c4;
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+#main{
+    padding: 0;
+}
+#popular-shirt-man{
+    height: 360px;
+    background-color: #eff5ee;
+}
+#popular-sweat-man{
+    height: 360px;
+    background-color: #eff5ee;
+}
+#popular-shirt-woman{
+    height: 360px;
+    background-color: #eff5ee;
+}
+#popular-sweat-woman{
+    height: 360px;
+    background-color: #eff5ee;
+}
+.rounded-circle-man{
+    width: 100%;
+}
+.rounded-circle-woman{
+    width: 90%;
+}
+#man , #woman{
+    padding: 0;
+}
+.more-items{
+    background-color: #eff5ee;
+    height: 50px;
+}
+a:link {
+    text-decoration: none;
+}
+.more-items a{
+    background-color: #8aa9c4;
+    border-radius: 15px;
+    color: #eff5ee;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#footer-payement{
+    height: 120px;
+    background-color: #8aa9c4;
+}
+#footer-social{
+    height: 150px;
+    background-color: #eff5ee;
+}
+#button-register-login{
+    border: solid 2px #8aa9c4;
+    border-radius: 10px;
+    background-color: #8aa9c4;
+    color: #eff5ee;
+}
+#button-login{
+    background-color: #eff5ee;
+    color: #8aa9c4;
+}
+#button-register{
+     background-color: #8aa9c4;
+     color: #eff5ee;
+ }
+#login-register-main{
+    padding: 0;
+}
+#button-man{
+    background-color: #eff5ee;
+    color: #8aa9c4;
+}
+#button-woman{
+    background-color: #8aa9c4;
+    color: #eff5ee;
+}
+#login{
+    background-color: #eff5ee;
+}
+#register{
+    background-color: #8aa9c4;
+}
+#button-submit-login{
+    background-color: #8aa9c4;
+    border: solid 1px #8aa9c4;
+    color: #eff5ee;
+}
+#button-submit-register{
+    background-color: #eff5ee;
+    border: solid 4px #eff5ee;
+    color: #8aa9c4;
+}
+#main-item{
+    height: 800px;
+    background-color: #eff5ee;
+}
+#image-main-item{
+    width: 70%;
+}
+#sizes ,#quantity{
+    width: 100px;
+}
+#button-main-item{
+    border: solid 2px #8aa9c4;
+    border-radius: 10px;
+    background-color: #8aa9c4;
+    color: #eff5ee;
+}
+#information{
+    margin-top: 150px;
+}
+#information h5 {
+    margin-top: 20px;
+}
+#message-error{
+    background-color: #8aa9c4;
+    color: #eff5ee;
+}
+#user-information-main{
+    background-color: #eff5ee;
+}
