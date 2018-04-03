@@ -7,7 +7,7 @@ if(!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] == 0){
     exit;
 }
 
-//supprimer l'utilisateur dont l'ID est envoyé en paramètre URL
+
 if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'delete'){
 
     $query = $db->prepare('DELETE FROM user WHERE id = ?');
@@ -16,7 +16,7 @@ if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'dele
             $_GET['user_id']
         ]
     );
-    //générer un message à afficher plus bas pour l'administrateur
+
     if($result){
         $message = "Suppression efféctuée.";
     }
@@ -25,7 +25,7 @@ if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'dele
     }
 }
 
-//séléctionner tous les utilisateurs pour affichage de la liste
+
 $query = $db->query('SELECT * FROM user');
 $users = $query->fetchall();
 ?>
@@ -33,13 +33,14 @@ $users = $query->fetchall();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Administration des utilisateurs - Mon premier blog !</title>
+    <title>Administration des utilisateurs</title>
     <?php require 'partials/head_assets.php'; ?>
 </head>
 <body class="index-body">
+<?php require 'partials/header.php'; ?>
 <div class="container-fluid">
 
-    <?php require 'partials/header.php'; ?>
+
 
     <div class="row my-3 index-content">
 
@@ -48,10 +49,10 @@ $users = $query->fetchall();
         <section class="col-9">
             <header class="pb-4 d-flex justify-content-between">
                 <h4>Liste des utilisateurs</h4>
-                <a class="btn btn-primary" href="user-form.php">Ajouter un utilisateur</a>
+                <a class="btn button-color" href="user-form.php">Ajouter un utilisateur</a>
             </header>
 
-            <?php if(isset($message)): //si un message a été généré plus haut, l'afficher ?>
+            <?php if(isset($message)): ?>
                 <div class="bg-success text-white p-2 mb-4">
                     <?php echo $message; ?>
                 </div>
@@ -80,8 +81,8 @@ $users = $query->fetchall();
                             <td><?php echo htmlentities($user['email']); ?></td>
                             <td><?php echo htmlentities($user['is_admin']); ?></td>
                             <td>
-                                <a href="user-form.php?user_id=<?php echo $user['id']; ?>&action=edit" class="btn btn-warning">Modifier</a>
-                                <a onclick="return confirm('Are you sure?')" href="user-list.php?user_id=<?php echo $user['id']; ?>&action=delete" class="btn btn-danger">Supprimer</a>
+                                <a href="user-form.php?user_id=<?php echo $user['id']; ?>&action=edit" class="btn button-color">Modifier</a>
+                                <a onclick="return confirm('Are you sure?')" href="user-list.php?user_id=<?php echo $user['id']; ?>&action=delete" class="btn btn-danger button-logout">Supprimer</a>
                             </td>
                         </tr>
 

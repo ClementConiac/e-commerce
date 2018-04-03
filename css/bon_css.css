@@ -1,5 +1,8 @@
-.body{
+.body {
     margin: 0;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: normal;
+    background-color: #eff5ee;
 }
 .container-fluid{
     padding: 0;
@@ -7,17 +10,36 @@
 #menu{
     height: 120px;
     background-color: #eff5ee;
-    border-bottom: solid 2px #8aa9c4;
 }
-#header{
-    height: 650px;
-    background: url("../image/utilitaire/background-header-opacity.png") bottom;
-    background-size: cover;
+#carouselExampleIndicators{
+    height: 660px;
 }
-#create-buy{
-    text-align: center;
-    color: #8aa9c4;
-    text-shadow: 2px 2px black;
+.carousel-image{
+    width: 900px;
+    height: 660px;
+}
+.carousel .item {
+    width: 100%; /*slider width*/
+    max-height: 600px; /*slider height*/
+}
+.carousel {
+    /*img width*/
+    width: 100%;
+}
+.item img{
+    width: 100%;
+    height: 50%;
+}
+/*full width container*/
+@media (max-width: 767px) {
+    .block {
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+}
+#navbar{
+    height: 100px;
+    background-color: #eff5ee;
 }
 #select-kind{
     background-color: #8aa9c4 ;
@@ -52,12 +74,6 @@
     height: 360px;
     background-color: #eff5ee;
 }
-.rounded-circle-man{
-    width: 100%;
-}
-.rounded-circle-woman{
-    width: 90%;
-}
 #man , #woman{
     padding: 0;
 }
@@ -75,19 +91,36 @@ a:link {
     padding-left: 10px;
     padding-right: 10px;
 }
-#footer-payement{
-    height: 120px;
+.footer{
+    height: 230px;
     background-color: #8aa9c4;
 }
-#footer-social{
-    height: 150px;
-    background-color: #eff5ee;
+.footer-icones{
+height: 150px;
+}
+.footer-link{
+    height: 40px;
+}
+.footer-link p{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.footer-link a{
+    color: #eff5ee;
+    text-decoration: none;
+}
+.footer-copyright{
+    height: 40px;
+    color: #eff5ee;
 }
 #button-register-login{
     border: solid 2px #8aa9c4;
     border-radius: 10px;
     background-color: #8aa9c4;
     color: #eff5ee;
+}
+#basket{
+
 }
 #button-login{
     background-color: #eff5ee;
@@ -99,14 +132,6 @@ a:link {
  }
 #login-register-main{
     padding: 0;
-}
-#button-man{
-    background-color: #eff5ee;
-    color: #8aa9c4;
-}
-#button-woman{
-    background-color: #8aa9c4;
-    color: #eff5ee;
 }
 #login{
     background-color: #eff5ee;
@@ -130,6 +155,10 @@ a:link {
 }
 #image-main-item{
     width: 70%;
+    box-shadow: 50px 50px 30px 10px rgba(0, 0, 0, .1);
+    border-radius: 20px;
+    border-top: 2px solid #8aa9c4;
+    border-left: 2px solid #8aa9c4;
 }
 #sizes ,#quantity{
     width: 100px;
@@ -141,7 +170,10 @@ a:link {
     color: #eff5ee;
 }
 #information{
-    margin-top: 150px;
+    box-shadow: 50px 50px 30px 10px rgba(0, 0, 0, .1);
+    border-radius: 20px;
+    border-top: 2px solid #8aa9c4;
+    border-left: 2px solid #8aa9c4;
 }
 #information h5 {
     margin-top: 20px;
@@ -153,3 +185,65 @@ a:link {
 #user-information-main{
     background-color: #eff5ee;
 }
+#main-login-register{
+    margin-top: 50px;
+}
+#button-search{
+    background-color: #8aa9c4;
+    color: #eff8ee;
+}
+#nav-search{
+    background-color: #eff5ee;
+    border: solid 1px #8aa9c4;
+}
+.button-color{
+    background-color: #8aa9c4;
+    color: #eff5ee;
+}
+.button-logout{
+    color: #eff5ee;
+}
+#button-log-out{
+    margin-right: 10px;
+}
+#nav-header{
+    width: 20%;
+}
+#popular-shirt-man-latest{
+    height: 1100px;
+    background-color: #eff5ee;
+}
+#popular-shirt-woman-latest{
+    height: 1100px;
+    background-color: #eff5ee;
+}
+.rnd-crl-latest{
+    width: 100%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-right: 1px solid #8aa9c4;
+    border-left: 1px solid #8aa9c4;
+}
+/*main index*/
+.main-index {
+    background-color: #eff5ee;
+    height: 1750px;
+}
+.style-hover{
+    background-color: #000000;
+    margin: 30px;
+}
+.image-index {
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+.cont:hover .image-index {
+    opacity: 0.3;
+}
+.cont:hover {
+    opacity: 1;
+}
+/*fin main index*/

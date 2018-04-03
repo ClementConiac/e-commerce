@@ -14,16 +14,15 @@ if(isset($_POST['login'])){
         $query = $db->prepare('SELECT *
 							FROM user
 							WHERE email = ? AND password = ?');
-        $query->execute( array( $_POST['email'], $_POST['password'] ) );
+        $query->execute( array( $_POST['email'], hash('md5', $_POST['password']), ) );
         $user = $query->fetch();
 
         //si un utilisateur correspond
         if($user){
             //on prend en session ses droits d'administration pour vérifier s'il a la permission d'accès au back-office
             $_SESSION['is_admin'] = $user['is_admin'];
-            $_SESSION['user_firstname'] = $user['firstname'];
-            $_SESSION['user_lastname'] = $user['lastname'];
-            $_SESSION['id'] = $user['id'];
+            $_SESSION['user'] = $user['firstname'];
+            $_SESSION['user_id'] = $user['id'];
 
 
         }
@@ -68,7 +67,7 @@ if(isset($_POST['register'])){
                 $_POST['lastname'],
                 $_POST['email'],
                 $_POST['adress'],
-                $_POST['password']
+                hash('md5', $_POST['password'])
 
             ]
         );
@@ -80,7 +79,7 @@ if(isset($_POST['register'])){
 }
 
 //si l'utilisateur a une session (il est connécté), on le redirige ailleurs
-if(isset($_SESSION['user_firstname'])){
+if(isset($_SESSION['user'])){
     header('location:index.php');
     exit;
 }
@@ -95,13 +94,13 @@ if(isset($_SESSION['user_firstname'])){
 </head>
 <div class="container-fluid">
     <div class="row" id="menu">
-        <div class="col-3 d-flex align-items-center justify-content-center">
+        <div class="col-12 d-flex align-items-center justify-content-center">
             <a href="index.php"><img src="image/utilitaire/logo.png" class="img-fluid" id="logo" alt="Responsive image"></a>
         </div>
     </div>
 </div>
-<body class="">
-    <div class="container-fluid">
+<body class="body">
+    <div class="container" id="main-login-register">
         <div class="row d-flex justify-content-center align-items-center">
             <main class="col-12" id="login-register-main">
                 <ul class="nav nav-pills nav-justified">
@@ -188,10 +187,8 @@ if(isset($_SESSION['user_firstname'])){
                     </div>
                 </div>
             </main>
-
         </div>
         <?php require 'partials/footer_js.php'; ?>
-
     </div>
 </body>
 </html>

@@ -123,12 +123,6 @@ if(isset($_POST['update'])){
         </div>
         <?php require 'partials/footer.php'; ?>
         <?php require 'partials/footer_js.php';?>
-        <?php require 'partials/footer_sociaux.php' ?>
     </div>
     </body>
     </html>
-
-
-
-</body>
-</html>

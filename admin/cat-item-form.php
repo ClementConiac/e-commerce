@@ -6,7 +6,7 @@ if(!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] == 0){
     exit;
 }
 
-//Si $_POST['save'] existe, cela signifie que c'est un ajout d'utilisateur
+
 if(isset($_POST['save'])){
     $query = $db->prepare('INSERT INTO category_item (name, description) VALUES (?, ?)');
     $newCategoryItem = $query->execute(
@@ -15,32 +15,31 @@ if(isset($_POST['save'])){
             $_POST['description'],
         ]
     );
-    //redirection après enregistrement
-    //si $newUser alors l'enregistrement a fonctionné
+
     if($newCategoryItem){
         header('location:cat-item-list.php');
         exit;
     }
-    else{ //si pas $newUser => enregistrement échoué => générer un message pour l'administrateur à afficher plus bas
+    else{
         $message = "Impossible d'enregistrer le nouvel utilisateur...";
     }
 }
 
-//Si $_POST['update'] existe, cela signifie que c'est une mise à jour d'utilisateur
+
 if(isset($_POST['update'])){
 
     $query = $db->prepare('UPDATE category_item SET
 		name = :name,
-		description = :description,
+		description = :description
 		WHERE id = :id'
     );
 
-    //données du formulaire
+
     $result = $query->execute(
         [
             'name' => $_POST['name'],
             'description' => $_POST['description'],
-
+            'id' => $_POST['id']
         ]
     );
 
@@ -53,12 +52,12 @@ if(isset($_POST['update'])){
     }
 }
 
-//si on modifie un utilisateur, on doit séléctionner l'utilisateur en question (id envoyé dans URL) pour pré-remplir le formulaire plus bas
+
 if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action'] == 'edit'){
 
     $query = $db->prepare('SELECT * FROM category_item WHERE id = ?');
     $query->execute(array($_GET['category_item_id']));
-    //$user contiendra les informations de l'utilisateur dont l'id a été envoyé en paramètre d'URL
+
     $item = $query->fetch();
 }
 
@@ -74,9 +73,10 @@ if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action']
 
 </head>
 <body class="index-body">
+<?php require 'partials/header.php'; ?>
 <div class="container-fluid">
 
-    <?php require 'partials/header.php'; ?>
+
 
     <div class="row my-3 index-content">
 
@@ -84,17 +84,17 @@ if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action']
 
         <section class="col-9">
             <header class="pb-3">
-                <!-- Si $user existe, on affiche "Modifier" SINON on affiche "Ajouter" -->
+
                 <h4><?php if(isset($item)): ?>Modifier<?php else: ?>Ajouter<?php endif; ?> un utilisateur</h4>
             </header>
 
-            <?php if(isset($message)): //si un message a été généré plus haut, l'afficher ?>
+            <?php if(isset($message)):  ?>
                 <div class="bg-danger text-white">
                     <?php echo $message; ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Si $user existe, chaque champ du formulaire sera pré-remplit avec les informations de l'utilisateur -->
+
 
             <form action="cat-item-form.php" method="post">
                 <div class="form-group">
@@ -107,24 +107,22 @@ if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action']
                 </div>
 
                 <div class="text-right">
-                    <!-- Si $user existe, on affiche un lien de mise à jour -->
+
                     <?php if(isset($item)): ?>
-                        <input class="btn btn-success" type="submit" name="update" value="Mettre à jour" />
-                        <!-- Sinon on afficher un lien d'enregistrement d'un nouvel utilisateur -->
+                        <input class="btn button-color" type="submit" name="update" value="Mettre à jour" />
+
                     <?php else: ?>
-                        <input class="btn btn-success" type="submit" name="save" value="Enregistrer" />
+                        <input class="btn button-color" type="submit" name="save" value="Enregistrer" />
                     <?php endif; ?>
                 </div>
 
-                <!-- Si $user existe, on ajoute un champ caché contenant l'id de l'utilisateur à modifier pour la requête UPDATE -->
+
                 <?php if(isset($item)): ?>
                     <input type="hidden" name="id" value="<?php echo $item['id']?>" />
                 <?php endif; ?>
-
             </form>
         </section>
     </div>
-
 </div>
 </body>
 </html>

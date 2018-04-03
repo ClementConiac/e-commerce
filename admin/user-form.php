@@ -1,19 +1,20 @@
 <?php
 require_once '../tools/common.php';
 
-if(!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] == 0){
+if(!isset($_SESSION['is_admin']) OR $_SESSION['is_admin'] == 0){
     header('location:../index.php');
     exit;
 }
 
 //Si $_POST['save'] existe, cela signifie que c'est un ajout d'utilisateur
 if(isset($_POST['save'])){
+
     $query = $db->prepare('INSERT INTO user (firstname, lastname, password, email, is_admin, adress) VALUES (?, ?, ?, ?, ?, ?)');
     $newUser = $query->execute(
         [
             $_POST['firstname'],
             $_POST['lastname'],
-            $_POST['password'],
+            hash('md5', $_POST['password']),
             $_POST['email'],
             $_POST['is_admin'],
             $_POST['adress'],
@@ -33,28 +34,35 @@ if(isset($_POST['save'])){
 //Si $_POST['update'] existe, cela signifie que c'est une mise à jour d'utilisateur
 if(isset($_POST['update'])){
 
-    $query = $db->prepare('UPDATE user SET
-		firstname = :firstname,
-		lastname = :lastname,
-		password = :password,
-		email = :email,
-		adress = :adress,
-		is_admin = :is_admin
-		WHERE id = :id'
-    );
-
-    //données du formulaire
-    $result = $query->execute(
+    //début de la chaîne de caractères de la requête de mise à jour
+    $queryString = 'UPDATE user SET 
+                    firstname = :firstname,
+                    lastname = :lastname,
+                    email = :email,
+                    adress = :adress ';
+    //début du tableau de paramètres de la requête de mise à jour
+    $queryParameters =
         [
             'firstname' => $_POST['firstname'],
             'lastname' => $_POST['lastname'],
-            'password' => $_POST['password'],
             'email' => $_POST['email'],
-            'is_admin' => $_POST['is_admin'],
             'adress' => $_POST['adress'],
-            'id' => $_POST['id'],
-        ]
-    );
+            'id' => $_SESSION['id'] ];
+
+    //uniquement si l'admin souhaite modifier le mot de passe
+    if( !empty($_POST['password'])) {
+        //concaténation du champ password à mettre à jour
+        $queryString .= ', password = :password ';
+        //ajout du paramètre password à mettre à jour
+        $queryParameters['password'] = hash('md5', $_POST['password']);
+    }
+
+    //fin de la chaîne de caractères de la requête de mise à jour
+    $queryString .= 'WHERE id = :id';
+
+    //préparation et execution de la requête avec la chaîne de caractères et le tableau de données
+    $query = $db->prepare($queryString);
+    $result = $query->execute($queryParameters);
 
     if($result){
         header('location:user-list.php');
@@ -122,12 +130,12 @@ if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'edit
                     <input class="form-control" <?php if(isset($user)): ?>value="<?php echo $user['email']?>"<?php endif; ?> type="email" placeholder="Email" name="email" id="email" />
                 </div>
                 <div class="form-group">
-                    <label for="password">Password : </label>
-                    <input class="form-control" <?php if(isset($user)): ?>value="<?php echo $user['password']?>"<?php endif; ?> type="password" placeholder="Mot de passe" name="password" id="password" />
+                    <label for="password">Password <?php if(isset($user)): ?>(uniquement si vous souhaitez modifier le mot de passe actuel) <?php endif; ?>: </label>
+                    <input class="form-control" type="password" placeholder="Mot de passe" name="password" id="password" />
                 </div>
                 <div class="form-group">
-                    <label for="adress">Adress :</label>
-                    <input class="form-control" <?php if(isset($user)): ?>value="<?php echo $user['adress']?>"<?php endif; ?> type="text" placeholder="Adress of shipping" name="adress" id="adress" />
+                    <label for="adress">adresse :</label>
+                    <textarea class="form-control" name="adress" id="adress" placeholder="adresse"><?php if(isset($user)): ?><?php echo $user['adress']?><?php endif; ?></textarea>
                 </div>
                 <div class="form-group">
                     <label for="is_admin"> Admin ?</label>
@@ -140,10 +148,10 @@ if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'edit
                 <div class="text-right">
                     <!-- Si $user existe, on affiche un lien de mise à jour -->
                     <?php if(isset($user)): ?>
-                        <input class="btn btn-success" type="submit" name="update" value="Mettre à jour" />
+                        <input class="btn button-color" type="submit" name="update" value="Mettre à jour" />
                         <!-- Sinon on afficher un lien d'enregistrement d'un nouvel utilisateur -->
                     <?php else: ?>
-                        <input class="btn btn-success" type="submit" name="save" value="Enregistrer" />
+                        <input class="btn button-color" type="submit" name="save" value="Enregistrer" />
                     <?php endif; ?>
                 </div>
 

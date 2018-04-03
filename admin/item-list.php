@@ -7,7 +7,7 @@ if(!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] == 0){
     exit;
 }
 
-//supprimer l'article dont l'ID est envoyé en paramètre URL
+
 if(isset($_GET['item_id']) && isset($_GET['action']) && $_GET['action'] == 'delete'){
 
     $query = $db->prepare('DELETE FROM item WHERE id = ?');
@@ -16,7 +16,7 @@ if(isset($_GET['item_id']) && isset($_GET['action']) && $_GET['action'] == 'dele
             $_GET['item_id']
         ]
     );
-    //générer un message à afficher plus bas pour l'administrateur
+
     if($result){
         $message = "Suppression efféctuée.";
     }
@@ -25,7 +25,7 @@ if(isset($_GET['item_id']) && isset($_GET['action']) && $_GET['action'] == 'dele
     }
 }
 
-//séléctionner tous les articles pour affichage de la liste
+
 $query = $db->query('SELECT * FROM item');
 $item = $query->fetchall();
 ?>
@@ -33,13 +33,14 @@ $item = $query->fetchall();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Administration des items - Original's Creation !</title>
+    <title>Administration des items </title>
     <?php require 'partials/head_assets.php'; ?>
 </head>
 <body class="index-body">
+<?php require 'partials/header.php'; ?>
 <div class="container-fluid">
 
-    <?php require 'partials/header.php'; ?>
+
 
     <div class="row my-3 index-content">
 
@@ -48,10 +49,10 @@ $item = $query->fetchall();
         <section class="col-9">
             <header class="pb-4 d-flex justify-content-between">
                 <h4>Liste des items</h4>
-                <a class="btn btn-primary" href="item-form.php">Ajouter un item</a>
+                <a class="btn button-color" href="item-form.php">Ajouter un item</a>
             </header>
 
-            <?php if(isset($message)): //si un message a été généré plus haut, l'afficher ?>
+            <?php if(isset($message)): ?>
                 <div class="bg-success text-white p-2 mb-4">
                     <?php echo $message; ?>
                 </div>
@@ -83,8 +84,8 @@ $item = $query->fetchall();
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="item-form.php?item_id=<?php echo $items['id']; ?>&action=edit" class="btn btn-warning">Modifier</a>
-                                <a onclick="return confirm('Are you sure?')" href="item-list.php?item_id=<?php echo $items['id']; ?>&action=delete" class="btn btn-danger">Supprimer</a>
+                                <a href="item-form.php?item_id=<?php echo $items['id']; ?>&action=edit" class="btn button-color">Modifier</a>
+                                <a onclick="return confirm('Are you sure?')" href="item-list.php?item_id=<?php echo $items['id']; ?>&action=delete" class="btn btn-danger button-logout">Supprimer</a>
                             </td>
                         </tr>
 

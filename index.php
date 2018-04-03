@@ -2,224 +2,187 @@
 
 require_once 'tools/common.php';
 
+if(isset($_GET['logout']) && isset($_SESSION['user'])){
 
-if(isset($_GET['logout']) && isset($_SESSION['user_firstname'])){
-
-
-    unset($_SESSION["user_firstname"]);
-    unset($_SESSION['user_lastname']);
+    unset($_SESSION["user"]);
     unset($_SESSION["is_admin"]);
 }
-/*if(isset($_GET['category_kind']) ){
-
-
-    $query = $db->prepare('SELECT * FROM category_kind WHERE id = ?');
-    $query->execute( array($_GET['category_kind']) );
-
-    $currentCategory = $query->fetch();
-
-    if($currentCategory){
-
-
-        $query = $db->prepare('SELECT * FROM item WHERE category_kind = ? AND is_published = 1 ORDER BY created_at DESC');
-        $result = $query->execute( array($_GET['category_kind']) );
-
-        $item = $query->fetchAll();
-    }
-    else{
-        header('location:index.php');
-        exit;
-    }
-
-}
-else{
-
-
-    $query = $db->query('SELECT item.* , category_kind.name AS category_name
-						FROM item
-						JOIN category_kind
-						ON item.category_kind = category_kind.id
-						WHERE is_published = 1
-						ORDER BY created_at DESC');
-    $item = $query->fetchAll();
-}
-*/
-    $queryShirtMan = $db->query('
-							SELECT item.* , category_item.name AS category_name
+$queryImage = $db->query('
+							SELECT item.*
 							FROM item
-							JOIN category_item
-							ON item.category_item = category_item.id
-							WHERE is_published = 1 AND category_kind = 1 AND category_item = 1
-							ORDER BY created_at DESC
-							LIMIT 0, 4'
-    );
-
-    $querySweatMan = $db->query('
-							SELECT item.* , category_item.name AS category_name
-							FROM item
-							JOIN category_item
-							ON item.category_item = category_item.id
-							WHERE is_published = 1 AND category_kind = 1 AND category_item = 2
-							ORDER BY created_at DESC
-							limit 0,4'
+							WHERE item.is_published = 1
+							ORDER BY created_at DESC '
 );
-
-    $queryShirtWoman = $db->query('
-							SELECT item.* , category_item.name AS category_name
-							FROM item
-							JOIN category_item
-							ON item.category_item = category_item.id
-							WHERE is_published = 1 AND category_kind = 2 AND category_item = 1
-							ORDER BY created_at DESC
-							LIMIT 0, 4'
-);
-
-    $querySweatWoman = $db->query('
-							SELECT item.* , category_item.name AS category_name
-							FROM item
-							JOIN category_item
-							ON item.category_item = category_item.id
-							WHERE is_published = 1 AND category_kind = 2 AND category_item = 2
-							ORDER BY created_at DESC
-							limit 0,4'
-
-);
-/*$queryKindId = $db->query('
-							SELECT item.* , category_kind.*
-							FROM item
-							JOIN category_kind
-							ON item.category_kind = category_kind.id
-							WHERE item.category_kind = 1');
-
-
-$Kind = $queryKindId->fetch();
-
-$queryItemId = $db->query('
-							SELECT item.* , category_item.*
-							FROM item
-							JOIN category_item
-							ON item.category_item = category_item.id 
-							WHERE item.category_item = 1');
-
-
-$Item = $queryItemId->fetch();
-*/
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-    <title>Homepage - Mon premier blog !</title>
+    <title>Original'creatioN</title>
     <?php require 'partials/head_assets.php'; ?>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="UTF-8">
 </head>
-
 <body class="body">
-<div class="container-fluid">
+<div class="container-fluid ctnr-fld-mar-padgn">
     <?php  require 'partials/header.php';?>
-    <div class="row" id="header">
-        <div class="col-12 d-flex align-items-center justify-content-center" id="create-buy">
-            <h1>Original'creatioN</h1>
-        </div>
-    </div>
     <div class="row">
-        <div class="col-12" id="main">
-            <ul class="nav nav-pills nav-justified">
-                <li class="nav-item">
-                    <a class="nav-link <?php if(isset($_POST['man']) || !isset($_POST['woman'])): ?>active<?php endif; ?>" id="button-man" data-toggle="tab" href="#man" role="tab">Man</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php if(isset($_POST['woman'])): ?>active<?php endif; ?>" id="button-woman" data-toggle="tab" href="#woman" role="tab">Woman</a>
-                </li>
-            </ul>
+        <section class="block">
+            <div class="carousel slide" id="featured" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active item">
+                        <img class="d-block img-fluid" src="image/utilitaire/background-carousel-1.jpg" alt="slider1">
+                    </div>
+                    <div class="carousel-item item">
+                        <img class="d-block img-fluid" src="image/utilitaire/background-carousel-2.jpg" alt="slider2">
+                    </div>
+                    <div class="carousel-item item">
+                        <img class="d-block img-fluid" src="image/utilitaire/background-carousel-3.jpg" alt="slider2">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#featured" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true">
+                <span class="sr-only">Previous</span>
+            </span>
+                </a>
+                <a class="carousel-control-next" href="#featured" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true">
+                <span class="sr-only">Next</span>
+            </span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+
+    <div class="row main-index" >
+        <div class="container d-flex">
+            <div class="row">
+                <?php while($item = $queryImage->fetch()): ?>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 test1">
+                    <?php if(!empty($item['image'])): ?>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="item-page.php?item_id=<?php echo $item['id']; ?>" >
+                            <img class="image-index" src="image/image-all/<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
+                        </a>
+                    </div>
+                    <?php endif; ?>
+
+
+                    <?php if(!empty($item['image'])): ?>
+                        <div class="style-hover cont d-flex justify-content-center align-items-center">
+                            <a href="item-page.php?item_id=<?php echo $item['id']; ?>" >
+                                <img class="image-index" src="image/image-all/<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if(!empty($item['image'])): ?>
+                        <div class="style-hover cont d-flex justify-content-center align-items-center">
+                            <a href="item-page.php?item_id=<?php echo $item['id']; ?>" >
+                                <img class="image-index" src="image/image-all/<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if(!empty($item['image'])): ?>
+                        <div class="style-hover cont d-flex justify-content-center align-items-center">
+                            <a href="item-page.php?item_id=<?php echo $item['id']; ?>" >
+                                <img class="image-index" src="image/image-all/<?php echo $item['image']; ?>" alt="<?php echo $item['title']; ?>">
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php $queryImage->closeCursor(); ?>
+                <?php endwhile; ?>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 test2">
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-xs-12 test3">
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                    <div class="style-hover cont d-flex justify-content-center align-items-center">
+                        <a href="#">
+                            <img class="image-index" src="image/image-all/">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-        <div class="tab-content">
-            <div class="tab-pane  <?php if(isset($_POST['man']) || !isset($_POST['woman'])): ?>active<?php endif; ?>" id="man" role="tabpanel">
-                <div class="row d-flex align-items-center justify-content-center" id="popular-shirt-man">
-                    <div class="container">
-                        <div class="row" >
-                            <?php while($itemTeeshirt = $queryShirtMan->fetch()): ?>
-                                <div class="col-3 d-flex align-items-center justify-content-center">
-                                    <?php if(!empty($itemTeeshirt['image'])): ?>
-                                        <div class="d-flex align-items-center justify-content-around">
-                                            <a href="item-page.php?item_id=<?php echo $itemTeeshirt['id']; ?>"><img class="rounded-circle rounded-circle-man"  src="image/image-all/<?php echo $itemTeeshirt['image']; ?>" alt="<?php echo $itemTeeshirt['title']; ?>"></a>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endwhile; ?>
-                        </div>
-                        <div class="row d-flex justify-content-end align-items-center more-items">
-                            <a href="latest-item.php?category_kind_id=1?category_item_id=1">Our latest tee-shirt ></a>
-                        </div>
-                    </div>
-                </div>
 
 
-                <div class="row d-flex align-items-center justify-content-center" id="popular-sweat-man">
-                    <div class="container">
-                        <div class="row">
-                            <?php while($itemSweatshirt = $querySweatMan->fetch()): ?>
-                                <div class="col-3 d-flex align-items-center justify-content-center">
-                                    <?php if(!empty($itemSweatshirt['image'])): ?>
-                                        <div class="d-flex align-items-center justify-content-around">
-                                            <a href="item-page.php?item_id=<?php echo $itemSweatshirt['id']; ?>"><img class="rounded-circle rounded-circle-man" src="image/image-all/<?php echo $itemSweatshirt['image']; ?>" alt="<?php echo $itemSweatshirt['title']; ?>"></a>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endwhile; ?>
-                        </div>
-                        <div class="row d-flex justify-content-end align-items-center more-items">
-                            <a href="latest-item.php?category_kind_id=1?category_item_id=2">Our latest sweat-shirt ></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="tab-pane <?php if(isset($_POST['woman'])): ?>active<?php endif; ?>" id="woman" role="tabpanel">
-                <div class="row d-flex align-items-center justify-content-center" id="popular-shirt-woman">
-                    <div class="container">
-                        <div class="row">
-                            <?php while($itemTeeshirt = $queryShirtWoman->fetch()): ?>
-                                <div class="col-3 d-flex align-items-center justify-content-center">
-                                    <?php if(!empty($itemTeeshirt['image'])): ?>
-                                        <div class="d-flex align-items-center justify-content-around">
-                                            <a href="item-page.php?item_id=<?php echo $itemTeeshirt['id']; ?>"><img class="rounded-circle rounded-circle-woman" src="image/image-all/<?php echo $itemTeeshirt['image']; ?>" alt="<?php echo $itemTeeshirt['title']; ?>"></a>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endwhile; ?>
-                        </div>
-                        <div class="row d-flex justify-content-end align-items-center more-items">
-                            <a href="latest-item.php?category_kind_id=2?category_item_id=1">Our latest tee-shirt ></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row d-flex align-items-center justify-content-center" id="popular-sweat-woman">
-                    <div class="container">
-                        <div class="row">
-                            <?php while($itemSweatshirt = $querySweatWoman->fetch()): ?>
-                                <div class="col-3 d-flex align-items-center justify-content-center">
-                                    <?php if(!empty($itemSweatshirt['image'])): ?>
-                                        <div class="d-flex align-items-center justify-content-around">
-                                            <a href="item-page.php?item_id=<?php echo $itemSweatshirt['id']; ?>"><img class="rounded-circle rounded-circle-woman" src="image/image-all/<?php echo $itemSweatshirt['image']; ?>" alt="<?php echo $itemSweatshirt['title']; ?>"></a>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endwhile; ?>
-                        </div>
-                        <div class="row d-flex justify-content-end align-items-center more-items">
-                            <a href="latest-item.php?category_kind_id=2?category_item_id=2">Our latest sweat-shirt ></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-<?php require 'partials/footer.php';?>
-<?php require 'partials/footer_js.php';?>
-<?php require 'partials/footer_sociaux.php' ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <?php require 'partials/footer.php';?>
+    <?php require 'partials/footer_js.php';?>
 </div>
 </body>
 </html>

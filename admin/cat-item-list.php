@@ -7,7 +7,6 @@ if(!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] == 0){
     exit;
 }
 
-//supprimer l'article dont l'ID est envoyé en paramètre URL
 if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action'] == 'delete'){
 
     $query = $db->prepare('DELETE FROM category_item WHERE id = ?');
@@ -16,7 +15,7 @@ if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action']
             $_GET['category_item_id']
         ]
     );
-    //générer un message à afficher plus bas pour l'administrateur
+
     if($result){
         $message = "Suppression efféctuée.";
     }
@@ -25,7 +24,7 @@ if(isset($_GET['category_item_id']) && isset($_GET['action']) && $_GET['action']
     }
 }
 
-//séléctionner tous les articles pour affichage de la liste
+
 $query = $db->query('SELECT * FROM category_item');
 $category_item = $query->fetchall();
 ?>
@@ -33,13 +32,14 @@ $category_item = $query->fetchall();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Administration des catégories item - Original's Creation !</title>
+    <title>Administration des catégories item</title>
     <?php require 'partials/head_assets.php'; ?>
 </head>
 <body class="index-body">
+<?php require 'partials/header.php'; ?>
 <div class="container-fluid">
 
-    <?php require 'partials/header.php'; ?>
+
 
     <div class="row my-3 index-content">
 
@@ -48,10 +48,10 @@ $category_item = $query->fetchall();
         <section class="col-9">
             <header class="pb-4 d-flex justify-content-between">
                 <h4>Liste des categories kind</h4>
-                <a class="btn btn-primary" href="cat-item-form.php">Ajouter une categorie item</a>
+                <a class="btn button-color" href="cat-item-form.php">Ajouter une categorie item</a>
             </header>
 
-            <?php if(isset($message)): //si un message a été généré plus haut, l'afficher ?>
+            <?php if(isset($message)): ?>
                 <div class="bg-success text-white p-2 mb-4">
                     <?php echo $message; ?>
                 </div>
@@ -77,8 +77,8 @@ $category_item = $query->fetchall();
                         <td><?php echo htmlentities($category_items['name']); ?></td>
                         <td><?php echo htmlentities($category_items['description']); ?></td>
                         <td>
-                            <a href="cat-item-form.php?category_item_id=<?php echo $category_items['id']; ?>&action=edit" class="btn btn-warning">Modifier</a>
-                            <a onclick="return confirm('Are you sure?')" href="cat-item-list.php?category_item_id=<?php echo $category_items['id']; ?>&action=delete" class="btn btn-danger">Supprimer</a>
+                            <a href="cat-item-form.php?category_item_id=<?php echo $category_items['id']; ?>&action=edit" class="btn button-color">Modifier</a>
+                            <a onclick="return confirm('Are you sure?')" href="cat-item-list.php?category_item_id=<?php echo $category_items['id']; ?>&action=delete" class="btn btn-danger button-logout">Supprimer</a>
                         </td>
                     </tr>
 

@@ -5,10 +5,9 @@ if(isset($_GET['item_id'] ) ){
 
 
     $queryItem = $db->prepare('
-		SELECT item.* , category_item.*
+		SELECT item.* , category_item.description
 		FROM item
 		JOIN category_item
-		ON item.category_item = category_item.id
 		WHERE item.id = ? AND item.is_published = 1');
     $queryItem->execute( array( $_GET['item_id'] ) );
 
@@ -20,28 +19,7 @@ if(isset($_GET['item_id'] ) ){
     }
 }
 
-
-
-if(isset($_POST['submit']) && isset($_SESSION["user_firstname"])){
-    $query = $db->prepare('INSERT INTO orders (item_title, user_firstname, user_lastname, sizes, quantity) VALUES (?, ?, ?, ?, ?)');
-    $newOrder = $query->execute(
-        [
-            $_POST['item_title'],
-            $_POST['user_firstname'],
-            $_POST['user_lastname'],
-            $_POST['sizes'],
-            $_POST['quantity']
-        ]
-    );
-
-if($newOrder){
-    header('location:index.php');
-    exit;
-}
-    else {
-        $messages = "Impossible de continuer, veuillez vous connecter";
-    }
-}
+        $queryImage = $db->query('SELECT * FROM item WHERE is_published = 1 LIMIT 1');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -60,17 +38,7 @@ if($newOrder){
 
         <div class="col-4 d-flex flex-column justify-content-start align-items-center">
         </div>
-<?php
-        $queryImage = $db->query('
-        SELECT item.* , category_item.name AS category_name
-        FROM item
-        JOIN category_item
-        ON item.category_item = category_item.id
-        WHERE is_published = 1
-        LIMIT 1'
-        );
-$message = "Impossible de continuer, veuillez vous connecter"
-?>
+
         <?php while($items = $queryImage->fetch()): ?>
             <div class="col-4 d-flex justify-content-center align-items-center">
                 <?php if(!empty($item['image'])): ?>
@@ -83,27 +51,26 @@ $message = "Impossible de continuer, veuillez vous connecter"
 
 
         <div class="col-4 d-flex flex-column justify-content-center align-items-start">
-            <form action="item-page.php" method="post" enctype="multipart/form-data">
+            <form action="basket.php" method="post" enctype="multipart/form-data">
                 <div id="information">
                     <h1><?php echo $item['title']; ?></h1>
+                    <h2 class="d-flex justify-content-center align-items-center"><?php echo $item['price']; ?>$</h2>
+                    <h5 class="d-flex justify-content-center align-items-center"><?php echo $item['description']; ?></h5>
 
-
-                    <h2><?php echo $item['price']; ?>$</h2>
-
-                    <h5><?php echo $item['description']; ?></h5>
-
-                    <div class="form-group">
-                        <label for="sizes"> Sizes : </label>
+                    <div class="form-group d-flex justify-content-center align-items-center">
+                        <label for="sizes"></label>
                         <select class="form-control" name="sizes" id="sizes">
+                            <option disabled selected value>Size</option>
                             <option>S</option>
                             <option>M</option>
                             <option>L</option>
                             <option>XL</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="quantity"> Quantity : </label>
+                    <div class="form-group d-flex justify-content-center align-items-center">
+                        <label for="quantity"></label>
                         <select class="form-control" name="quantity" id="quantity">
+                            <option disabled selected value>Quantity</option>
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -115,36 +82,10 @@ $message = "Impossible de continuer, veuillez vous connecter"
                             <option>9</option>
                         </select>
                     </div>
-
-                    <div class="text-right">
-
-                        <?php if(isset($_SESSION['user_firstname'])): ?>
-                            <input class="btn" id="button-main-item" type="submit" name="submit" value="Add to basket"/>
-                            <div class="form-group">
-                                <label for="user_firstname"></label>
-                                <input class="form-control" value="<?php echo $_SESSION['user_firstname']?>" type="hidden" name="user_firstname"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="user_lastname"></label>
-                                <input class="form-control" value="<?php echo $_SESSION['user_lastname']?>" type="hidden" name="user_lastname"/>
-                            </div>
-                        <?php else: ?>
-                                <?php if(isset($message)): //si un message a été généré plus haut, l'afficher ?>
-                                    <div class="p-2 mb-4 text-center" id="message-error">
-                                        <?php echo $message; ?>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endif; ?>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <input class="btn button-color " type="submit" name="update" value="Add to basket"/>
+                        <input type="hidden" name="item_id" value="<?php echo $item['id'] ?>">
                     </div>
-
-                    <div class="text-right">
-
-                    </div>
-                    <div class="form-group">
-                        <label for="item_title"></label>
-                        <input class="form-control" value="<?php echo $item['title']?>" type="hidden" name="item_title"/>
-                    </div>
-
 
                 </div>
             </form>
@@ -152,55 +93,7 @@ $message = "Impossible de continuer, veuillez vous connecter"
     </div>
     <?php require 'partials/footer.php';?>
     <?php require 'partials/footer_js.php';?>
-    <?php require 'partials/footer_sociaux.php' ?>
+
 </div>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
 </html>
