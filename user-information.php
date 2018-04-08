@@ -1,12 +1,13 @@
 <?php
 require_once 'tools/common.php';
-if(!isset($_SESSION['user_firstname'])){
+if(!isset($_SESSION['user'])){
     header('location:index.php');
     exit;
 }
 //si on modifie un utilisateur, on doit séléctionner l'utilisateur en question (id en session) pour pré-remplir le formulaire plus bas
 $query = $db->prepare('SELECT * FROM user WHERE id = ?');
-$query->execute(array($_SESSION['id']));
+$query->execute(array($_SESSION['user_id']));
+
 //$user contiendra les informations de l'utilisateur dont l'id est en session
 $user = $query->fetch();
 //En cas de mise à jour des informations
@@ -41,7 +42,7 @@ if(isset($_POST['update'])){
             'lastname' => $_POST['lastname'],
             'email' => $_POST['email'],
             'adress' => $_POST['adress'],
-            'id' => $_SESSION['id'] ];
+            'id' => $_SESSION['user_id'] ];
         //uniquement si l'utilisateur souhaite modifier son mot de passe
         if( !empty($_POST['password'])) {
             //concaténation du champ password à mettre à jour
@@ -65,7 +66,7 @@ if(isset($_POST['update'])){
 
 			//récupération des informations utilisateur qui ont été mises à jour pour affichage
 			$query = $db->prepare('SELECT * FROM user WHERE id = ?');
-			$query->execute(array($_SESSION['id']));
+			$query->execute(array($_SESSION['user_id']));
 			$user = $query->fetch();
 		}
 		else{
@@ -80,7 +81,7 @@ if(isset($_POST['update'])){
         <title>Homepage - Mon premier blog !</title>
         <?php require 'partials/head_assets.php'; ?>
     </head>
-    <body class="article-body">
+    <body class="body">
     <div class="container-fluid">
         <?php require 'partials/header.php'; ?>
         <div class="row align-items-center justify-content-center" id="user-information-main">
@@ -88,7 +89,7 @@ if(isset($_POST['update'])){
                 <form action="user-information.php" method="post" class="p-4 row flex-column">
                     <h4 class="pb-4 col-sm-8 offset-sm-2">Mise à jour des informations utilisateur</h4>
                     <?php if(isset($updateMessage)): ?>
-                        <div class="text-success col-sm-8 offset-sm-2 mb-4"><?php echo $updateMessage; ?></div>
+                        <div class="text-danger col-sm-8 offset-sm-2 mb-4"><?php echo $updateMessage; ?></div>
                     <?php endif; ?>
                     <div class="form-group col-sm-8 offset-sm-2">
                         <label for="firstname">Prénom <b class="text-danger">*</b></label>

@@ -171,11 +171,12 @@ if(isset($_GET['item_id']) && isset($_GET['action']) && $_GET['action'] == 'edit
 //si une image a été soumise
 if(isset($_POST['add_image'])){
 
-    $query = $db->prepare('INSERT INTO image (caption, item_id, model) VALUES (?, ?, ?)');
+    $query = $db->prepare('INSERT INTO image (caption, item_id, model, back) VALUES (?, ?, ?, ?)');
     $newImage = $query->execute([
         $_POST['caption'],
         $_POST['item_id'],
-        $_POST['model']
+        $_POST['model'],
+        $_POST['back']
     ]);
 
     //on récupère l'ID de l'image que l'on vient d'enregistrer en BDD
@@ -205,18 +206,23 @@ if(isset($_POST['add_image'])){
                 ]);
             }
         }
+        $imgMessage = "Image ajoutée avec succès !";
     }
 }
-if(isset($_POST['update_image'])){
-    //ici pour update d'une image existante
-    $query = $db->prepare('SELECT * FROM image WHERE id = ?');
-    $query->execute(array($_GET['item_id']));
-    //$article contiendra les informations de l'article dont l'id a été envoyé en paramètre d'URL
-    $image = $query->fetch();
+//suppression d'une image
+if(isset($_POST['delete_image'])){
+    $query = $db->prepare('SELECT name FROM image WHERE id = ?');
+    $query->execute([$_POST['img_id']]);
+    $ImgToUnlink = $query ->fetch();
+
+    unlink('../image/image-all/' . $ImgToUnlink['name']);
+
+    $queryDelete = $db->prepare('DELETE FROM image WHERE id=?');
+    $queryDelete->execute([$_POST['img_id']]);
+
+    $imgMessage = "Image Supprimée avec succès !";
 }
-if(isset($_GET['delete_image'])){
-    //ici pour supprimer une image existante
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -366,19 +372,39 @@ if(isset($_GET['delete_image'])){
                             <div class="form-group">
                                 <label for="model"> Photo mannequin ?</label>
                                 <select class="form-control" name="model" id="model">
-                                    <option value="0" <?php if(isset($item)): ?>selected<?php endif; ?>>Non</option>
                                     <option value="1" <?php if(isset($item)): ?>selected<?php endif; ?>>Oui</option>
+                                    <option value="0" <?php if(isset($item)): ?>selected<?php endif; ?>>Non</option>
                                 </select>
                             </div>
-
+                            <div class="form-group">
+                                <label for="back"> Photo de dos ?</label>
+                                <select class="form-control" name="back" id="back">
+                                    <option value="1" <?php if(isset($item)): ?>selected<?php endif; ?>>Oui</option>
+                                    <option value="0" <?php if(isset($item)): ?>selected<?php endif; ?>>Non</option>
+                                </select>
+                            </div>
                             <input type="hidden" name="item_id" value="<?php echo $item['id']; ?>" />
 
                             <div class="text-right">
-                                <input class="btn btn-success" type="submit" name="add_image" value="Enregistrer" />
+                                <input class="btn btn-success button-color" type="submit" name="add_image" value="Enregistrer" />
                             </div>
                         </form>
-                        <h5>Liste des images :</h5>
-                        <!-- ajout image galerie -->
+                        <div class="row">
+                            <h5 class="col-12 pb-4">Liste des images :</h5>
+
+                            <?php
+                            $queryListImages = $db->prepare('SELECT * FROM image WHERE item_id = ?');
+                            $queryListImages->execute(array($_GET['item_id']));
+
+                            foreach($queryListImages as $imageArticle) : ?>
+                                <form action="item-form.php?article_id=<?php echo $item['id']; ?>&action=edit" method="post" class="col-4 my-3">
+                                    <img src="../image/image-all/<?php echo $imageArticle['name']; ?>" alt="" class="img-fluid"/>
+                                    <p class="my-2"><?php echo $imageArticle['caption']; ?></p>
+                                    <input type="hidden" name="img_id" value="<?php echo $imageArticle['id']; ?>" />
+                                    <div class="text-right"><input class="btn btn-danger" type="submit" name="delete_image" value="Supprimer"/></div>
+                                </form>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 <?php endif; ?>
             </div>

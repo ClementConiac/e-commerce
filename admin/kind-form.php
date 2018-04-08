@@ -1,63 +1,115 @@
 <?php
 require_once '../tools/common.php';
 
-if(!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] == 0){
+if(!isset($_SESSION['is_admin']) OR $_SESSION['is_admin'] == 0){
     header('location:../index.php');
     exit;
 }
 
+//Si $_POST['save'] existe, cela signifie que c'est un ajout d'une catégorie
 if(isset($_POST['save'])){
-    $query = $db->prepare('INSERT INTO category_kind (name, description) VALUES (?, ?)');
-    $newCategoryKind = $query->execute(
+    $query = $db->prepare('INSERT INTO category_kind (name) VALUES (?)');
+    $newCategory = $query->execute(
         [
             $_POST['name'],
-            $_POST['description'],
         ]
     );
 
-    if($newCategoryKind){
+    if($newCategory){
+        if(isset($_FILES['image'])){
+
+            $allowed_extensions = array( 'jpg' , 'jpeg' , 'gif' , 'png' );
+            $my_file_extension = pathinfo( $_FILES['image']['name'] , PATHINFO_EXTENSION);
+
+            if ( in_array($my_file_extension , $allowed_extensions) ){
+
+                $new_file_name = md5(rand());
+                $destination = '../image/image-all/' . $new_file_name . '.' . $my_file_extension;
+                $result = move_uploaded_file( $_FILES['image']['tmp_name'], $destination);
+                $lastInsertedCategoryId = $db->lastInsertId();
+
+                $query = $db->prepare('UPDATE category_kind SET
+					image = :image
+					WHERE id = :id'
+                );
+                $resultUpdateImage = $query->execute(
+                    [
+                        'image' => $new_file_name . '.' . $my_file_extension,
+                        'id' => $lastInsertedCategoryId
+                    ]
+                );
+            }
+        }
+
         header('location:kind-list.php');
         exit;
     }
-    else{
-        $message = "Impossible d'enregistrer le nouvel utilisateur...";
+    else {
+        $message = "Impossible d'enregistrer la nouvelle categorie...";
     }
 }
 
-
+//Si $_POST['update'] existe, cela signifie que c'est une mise à jour de catégorie
 if(isset($_POST['update'])){
 
     $query = $db->prepare('UPDATE category_kind SET
-		name = :name,
-		description = :description,
+		name = :name
 		WHERE id = :id'
     );
 
-
+    //données du formulaire
     $result = $query->execute(
         [
             'name' => $_POST['name'],
-            'description' => $_POST['description'],
-
+            'id' => $_POST['id']
         ]
     );
 
     if($result){
+        if(isset($_FILES['image'])){
+
+            $allowed_extensions = array( 'jpg' , 'jpeg' , 'gif' , 'png' );
+            $my_file_extension = pathinfo( $_FILES['image']['name'] , PATHINFO_EXTENSION);
+
+            if ( in_array($my_file_extension , $allowed_extensions) ){
+
+                //si un fichier est soumis lors de la mise à jour, je commence par supprimer l'ancien du serveur s'il existe
+                if(isset($_POST['current-image'])){
+                    unlink('../image/image-all/' . $_POST['current-image']);
+                }
+
+                $new_file_name = md5(rand());
+                $destination = '../image/image-all/' . $new_file_name . '.' . $my_file_extension;
+                $result = move_uploaded_file( $_FILES['image']['tmp_name'], $destination);
+
+                $query = $db->prepare('UPDATE category_kind SET
+					image = :image
+					WHERE id = :id'
+                );
+                $resultUpdateImage = $query->execute(
+                    [
+                        'image' => $new_file_name . '.' . $my_file_extension,
+                        'id' => $_POST['id']
+                    ]
+                );
+            }
+        }
+
         header('location:kind-list.php');
         exit;
     }
-    else{
-        $message = 'Erreur.';
+    else {
+        $message = "Impossible d'enregistrer la nouvelle categorie...";
     }
 }
 
-
-if(isset($_GET['category_kind_id']) && isset($_GET['action']) && $_GET['action'] == 'edit'){
+//si on modifie une catégorie, on doit séléctionner la catégorie en question (id envoyé dans URL) pour pré-remplir le formulaire plus bas
+if(isset($_GET['category_kind']) && isset($_GET['action']) && $_GET['action'] == 'edit'){
 
     $query = $db->prepare('SELECT * FROM category_kind WHERE id = ?');
-    $query->execute(array($_GET['category_kind_id']));
-
-    $kind = $query->fetch();
+    $query->execute(array($_GET['category_kind']));
+    //$category contiendra les informations de la catégorie dont l'id a été envoyé en paramètre d'URL
+    $category = $query->fetch();
 }
 
 ?>
@@ -66,16 +118,15 @@ if(isset($_GET['category_kind_id']) && isset($_GET['action']) && $_GET['action']
 <html>
 <head>
 
-    <title>Administration des utilisateurs - Mon premier blog !</title>
+    <title>Administration des catégories - Mon premier blog !</title>
 
     <?php require 'partials/head_assets.php'; ?>
 
 </head>
 <body class="index-body">
-<?php require 'partials/header.php'; ?>
 <div class="container-fluid">
 
-
+    <?php require 'partials/header.php'; ?>
 
     <div class="row my-3 index-content">
 
@@ -83,8 +134,8 @@ if(isset($_GET['category_kind_id']) && isset($_GET['action']) && $_GET['action']
 
         <section class="col-9">
             <header class="pb-3">
-
-                <h4><?php if(isset($kind)): ?>Modifier<?php else: ?>Ajouter<?php endif; ?> un utilisateur</h4>
+                <!-- Si $category existe, on affiche "Modifier" SINON on affiche "Ajouter" -->
+                <h4><?php if(isset($user)): ?>Modifier<?php else: ?>Ajouter<?php endif; ?> une catégorie</h4>
             </header>
 
             <?php if(isset($message)): //si un message a été généré plus haut, l'afficher ?>
@@ -93,31 +144,36 @@ if(isset($_GET['category_kind_id']) && isset($_GET['action']) && $_GET['action']
                 </div>
             <?php endif; ?>
 
+            <!-- Si $category existe, chaque champ du formulaire sera pré-remplit avec les informations de la catégorie -->
 
-
-            <form action="kind-form.php" method="post">
+            <form action="kind-form.php" method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="name">Name :</label>
-                    <input class="form-control" <?php if(isset($kind)): ?>value="<?php echo $kind['name']?>"<?php endif; ?> type="text" placeholder="name" name="name" id="name" />
-                </div>
-                <div class="form-group">
-                    <label for="description">Description : </label>
-                    <input class="form-control" <?php if(isset($kind)): ?>value="<?php echo $kind['description']?>"<?php endif; ?> type="text" placeholder="description" name="description" id="description" />
+                    <label for="name">Nom :</label>
+                    <input class="form-control" <?php if(isset($category)): ?>value="<?php echo($category['name']); ?>"<?php endif; ?> type="text" placeholder="Nom" name="name" id="name" />
                 </div>
 
-                <div class="text-right">
-
-                    <?php if(isset($kind)): ?>
-                        <input class="btn button-color" type="submit" name="update" value="Mettre à jour" />
-
-                    <?php else: ?>
-                        <input class="btn button-color" type="submit" name="save" value="Enregistrer" />
+                <div class="form-group">
+                    <label for="image">Image :</label>
+                    <input class="form-control" type="file" name="image" id="image" />
+                    <?php if(isset($category) && $category['image']): ?>
+                        <img class="img-fluid py-4" src="../image/image-all/<?php echo $category['image']; ?>" alt="" />
+                        <input type="hidden" name="current-image" value="<?php echo $category['image']; ?>" />
                     <?php endif; ?>
                 </div>
 
+                <div class="text-right">
+                    <!-- Si $category existe, on affiche un lien de mise à jour -->
+                    <?php if(isset($category)): ?>
+                        <input class="btn btn-success" type="submit" name="update" value="Mettre à jour" />
+                        <!-- Sinon on afficher un lien d'enregistrement d'une nouvelle catégorie -->
+                    <?php else: ?>
+                        <input class="btn btn-success" type="submit" name="save" value="Enregistrer" />
+                    <?php endif; ?>
+                </div>
 
-                <?php if(isset($kind)): ?>
-                    <input type="hidden" name="id" value="<?php echo $kind['id']?>" />
+                <!-- Si $category existe, on ajoute un champ caché contenant l'id de la catégorie à modifier pour la requête UPDATE -->
+                <?php if(isset($category)): ?>
+                    <input type="hidden" name="id" value="<?php echo $category['id']?>" />
                 <?php endif; ?>
 
             </form>

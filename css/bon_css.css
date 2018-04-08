@@ -4,12 +4,16 @@
     font-weight: normal;
     background-color: #eff5ee;
 }
-.container-fluid{
-    padding: 0;
-}
 #menu{
-    height: 120px;
+    padding-bottom: 30px;
+    padding-top: 30px;
     background-color: #eff5ee;
+}
+.nav-category{
+    background-color: #8aa9c4;
+}
+.nav-category a {
+    color: #eff5ee;
 }
 #carouselExampleIndicators{
     height: 660px;
@@ -37,46 +41,6 @@
         margin-right: -20px;
     }
 }
-#navbar{
-    height: 100px;
-    background-color: #eff5ee;
-}
-#select-kind{
-    background-color: #8aa9c4 ;
-    height: 100px;
-}
-#button-kind{
-    border-radius: 10px;
-    border: solid 2px #eff5ee;
-    background-color: #eff5ee;
-    color: #8aa9c4;
-    padding-left: 25px;
-    padding-right: 25px;
-    margin-left: 50px;
-    margin-right: 50px;
-}
-#main{
-    padding: 0;
-}
-#popular-shirt-man{
-    height: 360px;
-    background-color: #eff5ee;
-}
-#popular-sweat-man{
-    height: 360px;
-    background-color: #eff5ee;
-}
-#popular-shirt-woman{
-    height: 360px;
-    background-color: #eff5ee;
-}
-#popular-sweat-woman{
-    height: 360px;
-    background-color: #eff5ee;
-}
-#man , #woman{
-    padding: 0;
-}
 .more-items{
     background-color: #eff5ee;
     height: 50px;
@@ -92,14 +56,7 @@ a:link {
     padding-right: 10px;
 }
 .footer{
-    height: 230px;
     background-color: #8aa9c4;
-}
-.footer-icones{
-height: 150px;
-}
-.footer-link{
-    height: 40px;
 }
 .footer-link p{
     margin-right: 10px;
@@ -114,7 +71,7 @@ height: 150px;
     color: #eff5ee;
 }
 #button-register-login{
-    border: solid 2px #8aa9c4;
+
     border-radius: 10px;
     background-color: #8aa9c4;
     color: #eff5ee;
@@ -149,35 +106,6 @@ height: 150px;
     border: solid 4px #eff5ee;
     color: #8aa9c4;
 }
-#main-item{
-    height: 800px;
-    background-color: #eff5ee;
-}
-#image-main-item{
-    width: 70%;
-    box-shadow: 50px 50px 30px 10px rgba(0, 0, 0, .1);
-    border-radius: 20px;
-    border-top: 2px solid #8aa9c4;
-    border-left: 2px solid #8aa9c4;
-}
-#sizes ,#quantity{
-    width: 100px;
-}
-#button-main-item{
-    border: solid 2px #8aa9c4;
-    border-radius: 10px;
-    background-color: #8aa9c4;
-    color: #eff5ee;
-}
-#information{
-    box-shadow: 50px 50px 30px 10px rgba(0, 0, 0, .1);
-    border-radius: 20px;
-    border-top: 2px solid #8aa9c4;
-    border-left: 2px solid #8aa9c4;
-}
-#information h5 {
-    margin-top: 20px;
-}
 #message-error{
     background-color: #8aa9c4;
     color: #eff5ee;
@@ -195,6 +123,7 @@ height: 150px;
 #nav-search{
     background-color: #eff5ee;
     border: solid 1px #8aa9c4;
+    width: 225px;
 }
 .button-color{
     background-color: #8aa9c4;
@@ -209,12 +138,10 @@ height: 150px;
 #nav-header{
     width: 20%;
 }
-#popular-shirt-man-latest{
-    height: 1100px;
+.item-man{
     background-color: #eff5ee;
 }
-#popular-shirt-woman-latest{
-    height: 1100px;
+.item-woman{
     background-color: #eff5ee;
 }
 .rnd-crl-latest{
@@ -227,10 +154,8 @@ height: 150px;
 /*main index*/
 .main-index {
     background-color: #eff5ee;
-    height: 1750px;
 }
 .style-hover{
-    background-color: #000000;
     margin: 30px;
 }
 .image-index {
@@ -240,10 +165,73 @@ height: 150px;
     transition: .5s ease;
     backface-visibility: hidden;
 }
-.cont:hover .image-index {
-    opacity: 0.3;
-}
-.cont:hover {
-    opacity: 1;
-}
 /*fin main index*/
+
+.main-items{
+    background-color: #8aa9c4;
+    color: #eff5ee;
+    margin-bottom: 50px;
+}
+.main-items h5{
+    color: #eff5ee;
+}
+.main-items p{
+    color: #eff5ee;
+}
+.main-items a:hover{
+    text-decoration: none;
+}
+.nav-link-kind{
+    color: #8aa9c4;
+}
+.data-image{
+    padding-bottom: 10px;
+}
+#main-item{
+    background-color: #eff5ee;
+    padding-bottom: 100px;
+    padding-top: 100px;
+}
+
+#sizes ,#quantity{
+    width: 100px;
+}
+#button-main-item{
+    border: solid 2px #8aa9c4;
+    border-radius: 10px;
+    background-color: #8aa9c4;
+    color: #eff5ee;
+}
+#information{
+padding-left: 50px;
+}
+#information h1{
+    font-weight: bold;
+    padding-bottom: 20px;
+}
+#information h5{
+    font-weight: bold;
+    padding-bottom: 20px;
+}
+#information h3{
+     font-weight: bold;
+    padding-bottom: 20px;
+ }
+
+.other-image{
+    padding-bottom: 20px;
+ }
+ .image-item{
+     border: 1px solid #8aa9c4;
+     width: 20%;
+
+ }
+ #main-item{
+     background-color: #E8E8E8;
+ }
+.suggest-item{
+    margin: 30px;
+}
+.suggest-image{
+     width: 20%;
+ }

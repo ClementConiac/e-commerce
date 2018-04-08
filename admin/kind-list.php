@@ -62,7 +62,6 @@ $category_kind = $query->fetchall();
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Description</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -75,10 +74,9 @@ $category_kind = $query->fetchall();
                         <!-- htmlentities sert à écrire les balises html sans les interpréter -->
                         <th><?php echo htmlentities($category_kinds['id']); ?></th>
                         <td><?php echo htmlentities($category_kinds['name']); ?></td>
-                        <td><?php echo htmlentities($category_kinds['description']); ?></td>
                         <td>
-                            <a href="kind-form.php?category_kind_id=<?php echo $category_kinds['id']; ?>&action=edit" class="btn button-color">Modifier</a>
-                            <a onclick="return confirm('Are you sure?')" href="kind-list.php?category_kind_id=<?php echo $category_kinds['id']; ?>&action=delete" class="btn btn-danger button-logout">Supprimer</a>
+                            <a href="kind-form.php?category_kind=<?php echo $category_kinds['id']; ?>&action=edit" class="btn button-color">Modifier</a>
+                            <a onclick="return confirm('Are you sure?')" href="kind-list.php?category_kind=<?php echo $category_kinds['id']; ?>&action=delete" class="btn btn-danger button-logout">Supprimer</a>
                         </td>
                     </tr>
 

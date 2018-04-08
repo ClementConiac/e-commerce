@@ -35,19 +35,9 @@ if(isset($_POST['save'])){
 if(isset($_POST['update'])){
 
     //début de la chaîne de caractères de la requête de mise à jour
-    $queryString = 'UPDATE user SET 
-                    firstname = :firstname,
-                    lastname = :lastname,
-                    email = :email,
-                    adress = :adress ';
+    $queryString = 'UPDATE user SET firstname = :firstname, lastname = :lastname, email = :email, adress = :adress ';
     //début du tableau de paramètres de la requête de mise à jour
-    $queryParameters =
-        [
-            'firstname' => $_POST['firstname'],
-            'lastname' => $_POST['lastname'],
-            'email' => $_POST['email'],
-            'adress' => $_POST['adress'],
-            'id' => $_SESSION['id'] ];
+    $queryParameters = [ 'firstname' => $_POST['firstname'], 'lastname' => $_POST['lastname'], 'email' => $_POST['email'], 'adress' => $_POST['adress'] , 'id' => $_POST['id']];
 
     //uniquement si l'admin souhaite modifier le mot de passe
     if( !empty($_POST['password'])) {
@@ -134,8 +124,8 @@ if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'edit
                     <input class="form-control" type="password" placeholder="Mot de passe" name="password" id="password" />
                 </div>
                 <div class="form-group">
-                    <label for="adress">adresse :</label>
-                    <textarea class="form-control" name="adress" id="adress" placeholder="adresse"><?php if(isset($user)): ?><?php echo $user['adress']?><?php endif; ?></textarea>
+                    <label for="adress">Adresse :</label>
+                    <textarea class="form-control" name="adress" id="adress" placeholder="Sa vie son oeuvre..."><?php if(isset($user)): ?><?php echo $user['adress']?><?php endif; ?></textarea>
                 </div>
                 <div class="form-group">
                     <label for="is_admin"> Admin ?</label>
@@ -148,10 +138,10 @@ if(isset($_GET['user_id']) && isset($_GET['action']) && $_GET['action'] == 'edit
                 <div class="text-right">
                     <!-- Si $user existe, on affiche un lien de mise à jour -->
                     <?php if(isset($user)): ?>
-                        <input class="btn button-color" type="submit" name="update" value="Mettre à jour" />
+                        <input class="btn btn-success" type="submit" name="update" value="Mettre à jour" />
                         <!-- Sinon on afficher un lien d'enregistrement d'un nouvel utilisateur -->
                     <?php else: ?>
-                        <input class="btn button-color" type="submit" name="save" value="Enregistrer" />
+                        <input class="btn btn-success" type="submit" name="save" value="Enregistrer" />
                     <?php endif; ?>
                 </div>
 

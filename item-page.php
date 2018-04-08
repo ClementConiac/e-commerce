@@ -3,23 +3,43 @@ require_once 'tools/common.php';
 
 if(isset($_GET['item_id'] ) ){
 
-
     $queryItem = $db->prepare('
 		SELECT item.* , category_item.description
 		FROM item
 		JOIN category_item
-		WHERE item.id = ? AND item.is_published = 1');
+		WHERE item.id = ? AND item.is_published = 1
+		 ');
     $queryItem->execute( array( $_GET['item_id'] ) );
 
     $item = $queryItem->fetch();
-
-    if(!$item){
+    //si pas d'article trouvé dans la base de données, renvoyer l'utilisateur vers la page index
+    if(!$item['id']){
         header('location:index.php');
         exit;
     }
+
+    //récupération des images
+
+    $query = $db->prepare('
+		SELECT image.*
+		FROM image
+		JOIN item ON image.item_id = item.id 
+		WHERE item.id = ? AND image.model = 0
+		ORDER BY image.id
+	');
+    $query->execute( array( $_GET['item_id'] ) );
+
+    $images = $query->fetchAll();
 }
 
-        $queryImage = $db->query('SELECT * FROM item WHERE is_published = 1 LIMIT 1');
+
+$queryImage1 = $db->query('
+            SELECT *
+            FROM item
+            WHERE item.is_published = 1
+            ORDER BY RAND()
+            LIMIT 4'
+);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -32,32 +52,35 @@ if(isset($_GET['item_id'] ) ){
 <body class="body">
 <div class="container-fluid">
     <?php  require 'partials/header.php';?>
-
-
     <div class="row" id="main-item">
-
-        <div class="col-4 d-flex flex-column justify-content-start align-items-center">
+        <div class="col-4 d-flex flex-column justify-content-start align-items-end contain-other ">
+            <?php foreach ($images as $image): ?>
+                <!--<a class="" data-fancybox="gallery" href="image/image-all/<?php echo $image['name']; ?>">-->
+                    <img class="img-fluid image-item" src="image/image-all/<?php echo $image['name']; ?>" alt="<?php echo $image['caption']; ?>" />
+                <!--</a>-->
+            <?php endforeach; ?>
         </div>
 
-        <?php while($items = $queryImage->fetch()): ?>
-            <div class="col-4 d-flex justify-content-center align-items-center">
-                <?php if(!empty($item['image'])): ?>
-                    <div>
-                        <img id="image-main-item" src="image/image-all/<?php echo $item['image']; ?>" class="img-fluid" alt="Responsive image">
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php endwhile; ?>
+
+        <div class="col-4 d-flex justify-content-center align-items-center">
+            <?php if(!empty($item['image'])): ?>
+                <div>
+                    <img id="image-main-item" src="image/image-all/<?php echo $item['image']; ?>" class="img-fluid" alt="Responsive image">
+                </div>
+            <?php endif; ?>
+        </div>
 
 
-        <div class="col-4 d-flex flex-column justify-content-center align-items-start">
+
+        <div class="col-4 d-flex flex-column justify-content-start align-items-start">
             <form action="basket.php" method="post" enctype="multipart/form-data">
                 <div id="information">
-                    <h1><?php echo $item['title']; ?></h1>
-                    <h2 class="d-flex justify-content-center align-items-center"><?php echo $item['price']; ?>$</h2>
-                    <h5 class="d-flex justify-content-center align-items-center"><?php echo $item['description']; ?></h5>
+                    <h1 class="d-flex justify-content-start align-items-center"><?php echo $item['title']; ?></h1>
+                    <h5 class="d-flex justify-content-start align-items-center"><?php echo $item['description']; ?></h5>
+                    <h3 class="d-flex justify-content-start align-items-center"><?php echo $item['price']; ?>€</h3>
 
-                    <div class="form-group d-flex justify-content-center align-items-center">
+
+                    <div class="form-group d-flex justify-content-start align-items-center pb-3">
                         <label for="sizes"></label>
                         <select class="form-control" name="sizes" id="sizes">
                             <option disabled selected value>Size</option>
@@ -67,29 +90,26 @@ if(isset($_GET['item_id'] ) ){
                             <option>XL</option>
                         </select>
                     </div>
-                    <div class="form-group d-flex justify-content-center align-items-center">
-                        <label for="quantity"></label>
-                        <select class="form-control" name="quantity" id="quantity">
-                            <option disabled selected value>Quantity</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
-                            <option>9</option>
-                        </select>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center">
+                    <div class="d-flex justify-content-start align-items-center">
                         <input class="btn button-color " type="submit" name="update" value="Add to basket"/>
                         <input type="hidden" name="item_id" value="<?php echo $item['id'] ?>">
                     </div>
-
                 </div>
+
             </form>
         </div>
+    </div>
+    <div class="row suggest">
+        <h3 class="suggest-text">Vous pouriez aussi aimer :</h3>
+        <?php while($item1 = $queryImage1->fetch()): ?>
+            <?php if(!empty($item1['image'])): ?>
+                <div class="suggest-item  justify-content-center align-items-center hvr-glow">
+                    <a href="item-page.php?item_id=<?php echo $item1['id']; ?>" >
+                        <img class="suggest-image" src="image/image-all/<?php echo $item1['image']; ?>" alt="<?php echo $item1['title']; ?>">
+                    </a>
+                </div>
+            <?php endif; ?>
+        <?php endwhile; ?>
     </div>
     <?php require 'partials/footer.php';?>
     <?php require 'partials/footer_js.php';?>

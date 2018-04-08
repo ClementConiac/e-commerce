@@ -173,7 +173,7 @@ if(isset($_SESSION['user'])){
                                 <input class="form-control" value="" type="password" placeholder="Confirmation du mot de passe" name="password_confirm" id="password_confirm" />
                             </div>
                             <div class="form-group col-sm-8 offset-sm-2">
-                                <label for="adress">Adress <b class="text-danger">*</b></label>
+                                <label for="adress">Adress</label>
                                 <textarea class="form-control" name="adress" id="adress" placeholder="Adress of shipping"></textarea>
                             </div>
 
